@@ -20,8 +20,8 @@ func handler(c *fiber.Ctx) error {
 	event, err := fromJson(c.Body())
 
 	if err != nil {
-		c.SendString(err.Error())
-		return c.SendStatus(500)
+		c.SendStatus(500)
+		return c.SendString(err.Error())
 	}
 
 	return c.SendString(event.Payload)
