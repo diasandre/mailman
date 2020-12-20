@@ -1,28 +1,18 @@
 package main
 
 import (
-	"encoding/json"
 	"github.com/gofiber/fiber"
+	"log"
 )
 
-type Event struct {
-	Type    string `json:"type"`
-	Payload string `json:"payload"`
-}
-
-func fromJson(data []byte) (Event, error) {
-	var event Event
-	err := json.Unmarshal(data, &event)
-	return event, err
-}
-
 func handler(c *fiber.Ctx) error {
-	event, err := fromJson(c.Body())
-
+	event, err := parser(c)
 	if err != nil {
-		c.SendStatus(500)
-		return c.SendString(err.Error())
+		log.Printf(err.Error())
+		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
+
+	consume(event)
 
 	return c.SendString(event.Payload)
 }
