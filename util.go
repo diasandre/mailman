@@ -8,6 +8,7 @@ var format = "${pid} - ${status} - ${method} - ${path} - ${body}\n"
 
 var successResponseLog = "success response"
 var receivedEventLog = "received event"
+var unsupportedEventType = "unsupported event: %s"
 
 func logError(err error) {
 	zapLogger.Error(err.Error())

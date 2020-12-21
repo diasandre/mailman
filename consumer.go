@@ -8,9 +8,13 @@ import (
 
 var client = resty.New()
 
-func defaultConsumer(event Event, c *fiber.Ctx) error {
-	resp, err := client.R().SetBody(event.Payload).Post("https://example:8080/api")
+func exampleConsumer(event Event, c *fiber.Ctx) error {
+	resp, err := request(event.Payload, "https://example:8080/api")
 	return responseHandler(event, c, resp, err)
+}
+
+func request(payload string, url string) (*resty.Response, error) {
+	return client.R().SetBody(payload).Post(url)
 }
 
 func responseHandler(event Event, c *fiber.Ctx, resp *resty.Response, err error) error {
