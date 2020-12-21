@@ -1,13 +1,18 @@
 package main
 
 import (
-	"github.com/gofiber/fiber"
-	"github.com/gofiber/fiber/middleware/logger"
-	"github.com/gofiber/fiber/middleware/recover"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"go.uber.org/zap"
 )
+
+var zapLogger *zap.Logger
 
 func main() {
 	app := fiber.New()
+
+	InitLogger()
 
 	app.Use(logger.New(logger.Config{
 		Format: format,
@@ -22,3 +27,5 @@ func main() {
 		panic(err)
 	}
 }
+
+func InitLogger() { zapLogger, _ = zap.NewProduction() }

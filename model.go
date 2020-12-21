@@ -8,5 +8,5 @@ type Event struct {
 }
 
 const (
-	UpdateCase EventType = "UPDATE_CASE"
+	example EventType = "EXAMPLE"
 )
