@@ -3,24 +3,23 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
-func consume(event Event, c *fiber.Ctx) error {
+func consume(event Event) error {
 	logReceivedEvent(event)
 	switch eventType := event.Type; eventType {
 	case example:
-		return exampleConsumer(event, c)
+		return exampleConsumer(event)
 	default:
-		return event.handleUnsupportedEventType(c)
+		return event.handleUnsupportedEventType()
 	}
 }
 
-func (event Event) handleUnsupportedEventType(c *fiber.Ctx) error {
+func (event Event) handleUnsupportedEventType() error {
 	err := errors.New(fmt.Sprintf(unsupportedEventType, event.Type))
-	zapLogger.Error(err.Error())
-	return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	logError(err)
+	return err
 }
 
 func logReceivedEvent(event Event) {

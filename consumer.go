@@ -2,39 +2,29 @@ package main
 
 import (
 	"github.com/go-resty/resty/v2"
-	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
-var client = resty.New()
-
-func exampleConsumer(event Event, c *fiber.Ctx) error {
+func exampleConsumer(event Event) error {
 	resp, err := request(event.Payload, "https://example:8080/api")
-	return responseHandler(event, c, resp, err)
+	return responseHandler(resp, event, err)
 }
 
 func request(payload string, url string) (*resty.Response, error) {
-	return client.R().SetBody(payload).Post(url)
+	return restClient.R().SetBody(payload).Post(url)
 }
 
-func responseHandler(event Event, c *fiber.Ctx, resp *resty.Response, err error) error {
+func responseHandler(resp *resty.Response, event Event, err error) error {
+	logResponse(event, resp)
 	if err != nil {
-		zapLogger.Error(err.Error())
-		if resp != nil && resp.StatusCode() != 0 {
-			c.Status(resp.StatusCode())
-		} else {
-			c.Status(fiber.StatusBadRequest)
-		}
-		return c.Send([]byte(err.Error()))
+		logError(err)
 	}
-
-	logSuccessResponse(event, resp)
-	return c.Send(resp.Body())
+	return err
 }
 
-func logSuccessResponse(event Event, resp *resty.Response) {
+func logResponse(event Event, resp *resty.Response) {
 	zapLogger.Info(
-		successResponseLog,
+		responseLog,
 		zap.String("eventType", string(event.Type)),
 		zap.String("payload", event.Payload),
 		zap.Int("statusCode", resp.StatusCode()),
