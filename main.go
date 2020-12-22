@@ -48,14 +48,14 @@ func initPubSub() {
 	client, err = pubsub.NewClient(ctx, projectID)
 
 	if err != nil {
-		zapLogger.Error(err.Error())
+		logError(err)
 	}
 
 	sub := client.Subscription(topicId)
 	err = sub.Receive(ctx, subscribe)
 
 	if err != nil {
-		zapLogger.Error(err.Error())
+		logError(err)
 	}
 }
 

@@ -18,7 +18,7 @@ func consume(event Event) error {
 
 func (event Event) handleUnsupportedEventType() error {
 	err := errors.New(fmt.Sprintf(unsupportedEventType, event.Type))
-	zapLogger.Error(err.Error())
+	logError(err)
 	return err
 }
 
